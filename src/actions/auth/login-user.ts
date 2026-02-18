@@ -6,7 +6,6 @@ import { cookies } from "next/headers";
 import { loginSchema } from "@/schema";
 import bcrypt from "bcryptjs";
 import * as z from "zod";
-import { logout } from "./logout";
 
 export const login = async (request: z.infer<typeof loginSchema>) => {
     const validatedRequest = loginSchema.safeParse(request);

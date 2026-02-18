@@ -27,3 +27,17 @@ export const getUserWithPasswordByEmail = async (email: string) => {
         },
     });
 };
+
+export const getUserForOAuthUsingId = async (userId: string, provider: string) => {
+    return await prisma.account.findUnique({
+        where: {
+            provider_providerAccountID: {
+                provider: provider,
+                providerAccountID: userId,
+            },
+        },include: {
+            user: true
+        }
+    
+    })
+}

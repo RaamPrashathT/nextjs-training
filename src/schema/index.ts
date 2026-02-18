@@ -22,3 +22,11 @@ export const tokenSchema = z.object({
   iat: z.number().optional(),
   exp: z.number().optional(),
 });
+
+export const OAuthIdTokenSchema = z.object({
+    sub: z.string(),
+    email: z.email(),
+    email_verified: z.boolean(),
+    name: z.string().optional().nullable(),
+    picture: z.string().optional().nullable()
+})

@@ -163,7 +163,7 @@ export function RegisterForm({
                                         payload: e.target.value,
                                     });
                                 }}
-                                required
+                                
                             />
                         </Field>
                         <Field className="flex flex-col gap-y-1.5">
@@ -183,7 +183,6 @@ export function RegisterForm({
                                         payload: e.target.value,
                                     });
                                 }}
-                                required
                             />
                         </Field>
                         <Field className="flex flex-col gap-y-1.5">
@@ -203,7 +202,7 @@ export function RegisterForm({
                                         payload: e.target.value,
                                     });
                                 }}
-                                required
+                                
                             />
                         </Field>
                         <Field className="mt-2">

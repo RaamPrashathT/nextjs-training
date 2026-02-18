@@ -109,13 +109,14 @@ export function LoginForm({
                 dispatch({
                     type: "SUBMIT_SUCCESS",
                 });
+                router.push("/hooks/UseReducer/Implementation-1");
             } else {
                 dispatch({
                     type: "SUBMIT_FAILURE",
                     payload: response.message,
                 });
             }
-            router.push("/hooks/UseReducer/Implementation-1");
+            
         } catch (error) {
             dispatch({
                 type: "SUBMIT_FAILURE",
@@ -150,7 +151,7 @@ export function LoginForm({
                                         payload: e.target.value,
                                     });
                                 }}
-                                required
+                                
                             />
                         </Field>
                         <Field className="flex flex-col gap-y-1.5">
@@ -170,7 +171,6 @@ export function LoginForm({
                                         payload: e.target.value,
                                     });
                                 }}
-                                required
                             />
                         </Field>
                         <Field className="mt-2">

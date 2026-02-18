@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 export function proxy(request: NextRequest) {
     const token = request.cookies.get('token');
 
-    const isAuthPage = request.nextUrl.pathname === 'login' || request.nextUrl.pathname === 'register';
+    const isAuthPage = request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register';
 
     if(!token && !isAuthPage) {
         return NextResponse.redirect(new URL('/login', request.url));
@@ -17,5 +17,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: '/((?!api|_next/static|_next/image|favicon.ico|login|register).*)',
+    matcher: '/((?!api|_next/static|_next/image|favicon.ico).*)',
 };
