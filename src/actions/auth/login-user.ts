@@ -15,7 +15,7 @@ export const login = async (request: z.infer<typeof loginSchema>) => {
         return {
             status: 400,
             success: false,
-            message: "Parsing Error",
+            message: "Invalid email or password",
         };
     }
 

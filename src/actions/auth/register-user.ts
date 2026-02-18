@@ -14,7 +14,7 @@ export const register = async (request: z.infer<typeof registerSchema>) => {
         return {
             status: 400,
             success: false,
-            message: "Parsing Error"
+            message: "Invalid email or password"
         }
     }
 
