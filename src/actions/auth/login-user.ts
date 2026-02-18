@@ -1,11 +1,12 @@
 "use server";
 
 import { getUserWithPasswordByEmail } from "@/data/user";
-import { createJWT } from "@/lib/auth";
+import { createJWT } from "@/lib/auth/auth";
 import { cookies } from "next/headers";
 import { loginSchema } from "@/schema";
 import bcrypt from "bcryptjs";
 import * as z from "zod";
+import { logout } from "./logout";
 
 export const login = async (request: z.infer<typeof loginSchema>) => {
     const validatedRequest = loginSchema.safeParse(request);
@@ -45,6 +46,7 @@ export const login = async (request: z.infer<typeof loginSchema>) => {
     }
 
     try {
+
         const token = await createJWT({
             userId: existingUser.userId,
             email: existingUser.providerAccountID,

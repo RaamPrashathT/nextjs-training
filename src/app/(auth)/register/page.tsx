@@ -1,6 +1,6 @@
 import { GalleryVerticalEnd } from "lucide-react"
-
 import { RegisterForm } from "@/components/auth/register/register-form"
+import Image from "next/image"
 import Link from "next/link"
 
 export default function RegisterPage() {
@@ -22,7 +22,8 @@ export default function RegisterPage() {
         </div>
       </div>
       <div className="bg-muted relative hidden lg:block">
-        <img
+        <Image
+          fill
           src="/placeholder.svg"
           alt="Image"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"

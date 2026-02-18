@@ -14,6 +14,7 @@ import Link from "next/link";
 import { useReducer } from "react";
 import { login } from "@/actions/auth/login-user";
 import { Spinner } from "@/components/ui/spinner";
+import { useRouter } from "next/navigation";
 
 type LoginFormState = {
     email: string;
@@ -75,6 +76,7 @@ export function LoginForm({
     ...props
 }: React.ComponentProps<"form">) {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const router = useRouter();
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -111,6 +113,7 @@ export function LoginForm({
                     payload: response.message,
                 });
             }
+            router.push("/hooks/UseReducer/Implementation-1");
         } catch (error) {
             dispatch({
                 type: "SUBMIT_FAILURE",
@@ -118,7 +121,7 @@ export function LoginForm({
             });
         }
     };
-
+    
     return (
         <form
             className={cn("flex flex-col gap-6", className)}
