@@ -13,12 +13,13 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { useReducer } from "react";
 import { register } from "@/actions/auth/register-user";
+import { Spinner } from "@/components/ui/spinner";
 
 type RegisterFormState = {
     email: string;
     password: string;
     confirmPassword: string;
-    error: string;
+    error: string | null;
     loading: boolean;
 };
 
@@ -26,7 +27,7 @@ const initialState: RegisterFormState = {
     email: "",
     password: "",
     confirmPassword: "",
-    error: "",
+    error: null,
     loading: false,
 };
 
@@ -36,7 +37,7 @@ type Action =
     | { type: "SET_CONFIRM_PASSWORD"; payload: string }
     | { type: "SUBMIT_START" }
     | { type: "SUBMIT_SUCCESS" }
-    | { type: "SUBMIT_FAILURE", payload: string };
+    | { type: "SUBMIT_FAILURE"; payload: string };
 
 const reducer = (state: RegisterFormState, action: Action) => {
     if (action.type === "SET_EMAIL") {
@@ -55,8 +56,23 @@ const reducer = (state: RegisterFormState, action: Action) => {
             confirmPassword: action.payload,
         };
     } else if (action.type === "SUBMIT_START") {
-        console.log("submiting", state);
-        return state;
+        return {
+            ...state,
+            error: "",
+            loading: true,
+        };
+    } else if (action.type === "SUBMIT_SUCCESS") {
+        return {
+            ...state,
+            error: null,
+            loading: false,
+        };
+    } else if (action.type === "SUBMIT_FAILURE") {
+        return {
+            ...state,
+            error: action.payload,
+            loading: false,
+        };
     } else {
         return state;
     }
@@ -71,7 +87,11 @@ export function RegisterForm({
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (state.email === "" || state.password === "" || state.confirmPassword === "") {
+        if (
+            state.email === "" ||
+            state.password === "" ||
+            state.confirmPassword === ""
+        ) {
             dispatch({
                 type: "SUBMIT_FAILURE",
                 payload: "Please fill out all fields",
@@ -93,12 +113,21 @@ export function RegisterForm({
             const request = {
                 email: state.email,
                 password: state.password,
-            }
+            };
 
             const response = await register(request);
-            
-            
-        }catch(error) {
+
+            if (response.success) {
+                dispatch({
+                    type: "SUBMIT_SUCCESS",
+                });
+            } else {
+                dispatch({
+                    type: "SUBMIT_FAILURE",
+                    payload: response.message,
+                });
+            }
+        } catch (error) {
             dispatch({
                 type: "SUBMIT_FAILURE",
                 payload: "Something went wrong" + error,
@@ -113,70 +142,88 @@ export function RegisterForm({
             onSubmit={handleSubmit}
         >
             <FieldGroup>
-                <div className="flex flex-col items-center gap-1 text-center">
-                    <h1 className="text-2xl font-bold">Register</h1>
-                    <p className="text-muted-foreground text-sm text-balance">
-                        Enter your email below to register to your account
-                    </p>
+                <div>
+                    <div className="flex flex-col items-center gap-1 text-center">
+                        <h1 className="text-2xl font-bold mb-4">Register</h1>
+                    </div>
+                    <div className="flex flex-col gap-y-3">
+                        <Field className="flex flex-col gap-y-1.5">
+                            <FieldLabel htmlFor="email">Email</FieldLabel>
+                            <Input
+                                name="email"
+                                id="email"
+                                type="email"
+                                placeholder="m@example.com"
+                                value={state.email}
+                                onChange={(e) => {
+                                    dispatch({
+                                        type: "SET_EMAIL",
+                                        payload: e.target.value,
+                                    });
+                                }}
+                                required
+                            />
+                        </Field>
+                        <Field className="flex flex-col gap-y-1.5">
+                            <div className="flex items-center">
+                                <FieldLabel htmlFor="password">
+                                    Password
+                                </FieldLabel>
+                            </div>
+                            <Input
+                                name="password"
+                                id="password"
+                                type="password"
+                                value={state.password}
+                                onChange={(e) => {
+                                    dispatch({
+                                        type: "SET_PASSWORD",
+                                        payload: e.target.value,
+                                    });
+                                }}
+                                required
+                            />
+                        </Field>
+                        <Field className="flex flex-col gap-y-1.5">
+                            <div className="flex items-center">
+                                <FieldLabel htmlFor="password">
+                                    Confirm Password
+                                </FieldLabel>
+                            </div>
+                            <Input
+                                name="confirm-password"
+                                id="confirm-password"
+                                type="password"
+                                value={state.confirmPassword}
+                                onChange={(e) => {
+                                    dispatch({
+                                        type: "SET_CONFIRM_PASSWORD",
+                                        payload: e.target.value,
+                                    });
+                                }}
+                                required
+                            />
+                        </Field>
+                        <Field className="mt-2">
+                            <Button type="submit">
+                                {state.loading ? (
+                                    <div className="flex items-center gap-x-1">
+                                        <Spinner />
+                                        <p>Loading...</p>
+                                    </div>
+                                ) : (
+                                    "Register"
+                                )}
+                            </Button>
+                        </Field>
+                    </div>
+                    <div className="mt-3 text-center">
+                        {state.error && (
+                            <p className="text-destructive">{state.error}</p>
+                        )}
+                    </div>
                 </div>
-                <Field>
-                    <FieldLabel htmlFor="email">Email</FieldLabel>
-                    <Input
-                        name="email"
-                        id="email"
-                        type="email"
-                        placeholder="m@example.com"
-                        value={state.email}
-                        onChange={(e) => {
-                            dispatch({
-                                type: "SET_EMAIL",
-                                payload: e.target.value,
-                            });
-                        }}
-                        required
-                    />
-                </Field>
-                <Field>
-                    <div className="flex items-center">
-                        <FieldLabel htmlFor="password">Password</FieldLabel>
-                    </div>
-                    <Input
-                        name="password"
-                        id="password"
-                        type="password"
-                        value={state.password}
-                        onChange={(e) => {
-                            dispatch({
-                                type: "SET_PASSWORD",
-                                payload: e.target.value,
-                            });
-                        }}
-                        required
-                    />
-                </Field>
-                <Field>
-                    <div className="flex items-center">
-                        <FieldLabel htmlFor="password">
-                            Confirm Password
-                        </FieldLabel>
-                    </div>
-                    <Input
-                        name="confirm-password"
-                        id="confirm-password"
-                        type="password"
-                        value={state.confirmPassword}
-                        onChange={(e) => {
-                            dispatch({
-                                type: "SET_CONFIRM_PASSWORD",
-                                payload: e.target.value,
-                            });
-                        }}
-                        required
-                    />
-                </Field>
-                <Field>
-                    <Button type="submit">Register</Button>
-                </Field>
+
                 <FieldSeparator>Or continue with</FieldSeparator>
                 <Field>
                     <Button variant="outline" type="button">

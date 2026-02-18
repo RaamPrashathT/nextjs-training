@@ -20,7 +20,6 @@ export const register = async (request: z.infer<typeof registerSchema>) => {
 
     const existingUser = await getUserByEmail(validatedRequest.data.email);
     
-
     if(existingUser) {
         return {
             status: 400,
@@ -29,18 +28,19 @@ export const register = async (request: z.infer<typeof registerSchema>) => {
         }
     }
 
-    const hashedPassword = await bcrypt.hash(validatedRequest.data.password, 17);
-    const randomName=  generateName();
+    
+    const hashedPassword = await bcrypt.hash(validatedRequest.data.password, 11);
+    const randomName = generateName();
 
     try {
         await prisma.user.create({
             data: {
                 username: randomName,
-                email: request.email,
+                email: validatedRequest.data.email,
                 accounts: {
                     create: {
                         provider: "credentials",
-                        providerAccountID: request.email,
+                        providerAccountID: validatedRequest.data.email,
                         password: hashedPassword
                     }
                 }

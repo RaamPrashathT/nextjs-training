@@ -10,3 +10,20 @@ export const getUserByEmail = async (email: string) => {
 
     return response
 }
+
+export const getUserWithPasswordByEmail = async (email: string) => {
+    return await prisma.account.findUnique({
+        where: {
+            provider_providerAccountID: {
+                provider: "credentials",
+                providerAccountID: email,
+            },
+        },
+        select: {
+            userId: true,
+            providerAccountID: true,
+            provider: true,
+            password: true,
+        },
+    });
+};
