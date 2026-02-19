@@ -1,11 +1,20 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { FaGithub } from "react-icons/fa";
 
 export const GithubOAuthButton = () => {
+
     return (
-        <Button variant="outline" type="button">
+        <Button
+            type="button"
+            variant="outline"
+            onClick={() => {
+                globalThis.location.href = "/api/auth/github";
+            }}
+        >
             <FaGithub />
-            Continue with GitHub
+            Continue with Github
         </Button>
     );
 };
